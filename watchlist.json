@@ -1,0 +1,62 @@
+[
+  {
+    "name": "LangSmith",
+    "github": "langchain-ai/langsmith-sdk",
+    "npm": "langsmith",
+    "ecosystem": ["python", "llm-tooling"]
+  },
+  {
+    "name": "LangGraph",
+    "github": "langchain-ai/langgraph",
+    "npm": "@langchain/langgraph",
+    "ecosystem": ["python", "llm-tooling"]
+  },
+  {
+    "name": "CrewAI",
+    "github": "crewAIInc/crewAI",
+    "npm": null,
+    "ecosystem": ["python", "llm-tooling"]
+  },
+  {
+    "name": "LlamaIndex",
+    "github": "run-llama/llama_index",
+    "npm": "llamaindex",
+    "ecosystem": ["python", "llm-tooling"]
+  },
+  {
+    "name": "Vercel AI SDK",
+    "github": "vercel/ai",
+    "npm": "ai",
+    "ecosystem": ["typescript", "nextjs"]
+  },
+  {
+    "name": "LiteLLM",
+    "github": "BerriAI/litellm",
+    "npm": null,
+    "ecosystem": ["python", "llm-tooling"]
+  },
+  {
+    "name": "OpenTelemetry Auto-Instrumentation",
+    "github": "open-telemetry/opentelemetry-python-contrib",
+    "npm": null,
+    "ecosystem": ["python", "infrastructure"]
+  },
+  {
+    "name": "tRPC",
+    "github": "trpc/trpc",
+    "npm": "@trpc/server",
+    "ecosystem": ["typescript", "nextjs"]
+  },
+  {
+    "name": "Drizzle ORM",
+    "github": "drizzle-team/drizzle-orm",
+    "npm": "drizzle-orm",
+    "ecosystem": ["typescript", "nextjs"]
+  },
+  {
+    "name": "Hono",
+    "github": "honojs/hono",
+    "npm": "hono",
+    "ecosystem": ["typescript"]
+  }
+]

@@ -1,0 +1,60 @@
+name: AI Research Draft
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_name:
+        description: 'Name of the candidate from candidates.json'
+        required: true
+        type: string
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests openai python-frontmatter
+
+      - name: Generate draft entry
+        run: python scripts/ai_draft.py --candidate "${{ inputs.candidate_name }}"
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create branch and commit
+        id: create_branch
+        run: |
+          CANDIDATE_SLUG=$(echo "${{ inputs.candidate_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+          BRANCH="draft/${CANDIDATE_SLUG}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add entries/
+          git commit -m "draft: add entry for ${{ inputs.candidate_name }}"
+          git push origin "$BRANCH"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Open PR
+        run: |
+          CANDIDATE_SLUG=$(echo "${{ inputs.candidate_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+          BRANCH="draft/${CANDIDATE_SLUG}"
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "Draft entry: ${{ inputs.candidate_name }}" \
+            --body "AI-generated draft entry for **${{ inputs.candidate_name }}**. See the editorial checklist in the PR template." \
+            --label "draft"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

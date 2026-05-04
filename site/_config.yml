@@ -1,0 +1,17 @@
+title: Agent Journal
+description: Curated intelligence for AI coding agents and the engineers who build them.
+baseurl: ""
+url: "https://agent-journal.github.io"
+collections:
+  entries:
+    output: true
+    permalink: /entries/:path/
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+  - scope:
+      path: "entries"
+    values:
+      layout: entry

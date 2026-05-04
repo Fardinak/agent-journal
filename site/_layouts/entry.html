@@ -1,0 +1,83 @@
+---
+layout: default
+---
+
+<article class="entry-page">
+  <header class="entry-header">
+    <div class="entry-sidebar">
+      <div class="meta-block">
+        <h1>{{ page.title }}</h1>
+        <time datetime="{{ page.date }}">{{ page.date }}</time>
+        <span class="badge badge-{{ page.significance }}">{{ page.significance }}</span>
+      </div>
+
+      <div class="meta-block">
+        <h3>Category</h3>
+        <p>{{ page.category }}</p>
+      </div>
+
+      <div class="meta-block">
+        <h3>Ecosystem</h3>
+        <ul class="tag-list">
+          {% for eco in page.ecosystem %}
+          <li><code>{{ eco }}</code></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="meta-block">
+        <h3>Reach for when</h3>
+        <p class="reach-for-highlight">{{ page.reach_for_when }}</p>
+      </div>
+
+      {% if page.displaces %}
+      <div class="meta-block">
+        <h3>Displaces</h3>
+        <ul>
+          {% for item in page.displaces %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if page.complements %}
+      <div class="meta-block">
+        <h3>Complements</h3>
+        <ul>
+          {% for item in page.complements %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <button id="copy-json" class="btn-copy-json">Copy entry as JSON</button>
+    </div>
+
+    <div class="entry-body">
+      {{ content }}
+    </div>
+  </header>
+</article>
+
+<script>
+document.getElementById('copy-json').addEventListener('click', function() {
+  const entry = {
+    title: {{ page.title | jsonify }},
+    date: {{ page.date | jsonify }},
+    ecosystem: {{ page.ecosystem | jsonify }},
+    category: {{ page.category | jsonify }},
+    significance: {{ page.significance | jsonify }},
+    displaces: {{ page.displaces | jsonify }},
+    complements: {{ page.complements | jsonify }},
+    reach_for_when: {{ page.reach_for_when | jsonify }},
+    url: "{{ page.url | absolute_url }}"
+  };
+  navigator.clipboard.writeText(JSON.stringify(entry, null, 2)).then(function() {
+    const btn = document.getElementById('copy-json');
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = 'Copy entry as JSON'; }, 2000);
+  });
+});
+</script>

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+env/
+
+# Jekyll
+site/_site/
+site/.jekyll-cache/
+site/.jekyll-metadata
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies (optional, can be committed if desired)
+# site/Gemfile.lock
+
+# Local config overrides
+.env
+.env.*
+!.env.example

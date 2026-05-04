@@ -1,0 +1,41 @@
+name: Signal Detection
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests python-frontmatter
+
+      - name: Run signal detection
+        run: python scripts/signal_detection.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit candidates.json if changed
+        run: |
+          if git diff --quiet candidates.json 2>/dev/null; then
+            echo "No changes to candidates.json"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add candidates.json
+            git commit -m "chore: update candidates.json [skip ci]"
+            git push
+          fi

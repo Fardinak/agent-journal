@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-05-04T23:31:36Z",
+  "total": 1,
+  "entries": [
+    {
+      "title": "LangSmith tackles the agent observability gap",
+      "date": "2026-04-15",
+      "ecosystem": [
+        "python",
+        "llm-tooling"
+      ],
+      "category": "observability",
+      "significance": "high",
+      "displaces": [
+        "custom logging",
+        "wandb (for LLM use cases)"
+      ],
+      "complements": [
+        "langchain",
+        "langgraph"
+      ],
+      "reach_for_when": "You need trace-level visibility into multi-step agent runs in production",
+      "url": "https://agent-journal.github.io/entries/python/2026-04-15-langsmith-tackles-agent-observability-gap.html",
+      "source_file": "entries/python/2026-04-15-langsmith-tackles-agent-observability-gap.md"
+    }
+  ]
+}
