@@ -1,1 +1,111 @@
-[]
+[
+  {
+    "name": "LangSmith",
+    "repo_url": "https://github.com/langchain-ai/langsmith-sdk",
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 873,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "LangGraph",
+    "repo_url": "https://github.com/langchain-ai/langgraph",
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 31228,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "CrewAI",
+    "repo_url": "https://github.com/crewAIInc/crewAI",
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 50669,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "LlamaIndex",
+    "repo_url": "https://github.com/run-llama/llama_index",
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 49138,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "Vercel AI SDK",
+    "repo_url": "https://github.com/vercel/ai",
+    "ecosystem": [
+      "typescript",
+      "nextjs"
+    ],
+    "stars_delta": 24030,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "LiteLLM",
+    "repo_url": "https://github.com/BerriAI/litellm",
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 45736,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "OpenTelemetry Auto-Instrumentation",
+    "repo_url": "https://github.com/open-telemetry/opentelemetry-python-contrib",
+    "ecosystem": [
+      "python",
+      "infrastructure"
+    ],
+    "stars_delta": 1037,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "tRPC",
+    "repo_url": "https://github.com/trpc/trpc",
+    "ecosystem": [
+      "typescript",
+      "nextjs"
+    ],
+    "stars_delta": 40146,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "Drizzle ORM",
+    "repo_url": "https://github.com/drizzle-team/drizzle-orm",
+    "ecosystem": [
+      "typescript",
+      "nextjs"
+    ],
+    "stars_delta": 34208,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "Hono",
+    "repo_url": "https://github.com/honojs/hono",
+    "ecosystem": [
+      "typescript"
+    ],
+    "stars_delta": 30296,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05"
+  }
+]
