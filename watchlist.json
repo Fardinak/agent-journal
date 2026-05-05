@@ -58,5 +58,11 @@
     "github": "honojs/hono",
     "npm": "hono",
     "ecosystem": ["typescript"]
+  },
+  {
+    "name": "zustand",
+    "github": "pmndrs/zustand",
+    "npm": "zustand",
+    "ecosystem": ["typescript", "nextjs"]
   }
 ]
