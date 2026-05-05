@@ -35,10 +35,12 @@ jobs:
           bundler-cache: true
           working-directory: site
 
-      - name: Copy feeds into site
+      - name: Copy feeds and entries into site
         run: |
           mkdir -p site/feeds
           cp -r feeds/* site/feeds/
+          mkdir -p site/entries
+          cp -r entries/** site/entries/
 
       - name: Build with Jekyll
         run: |

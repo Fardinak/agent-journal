@@ -6,6 +6,7 @@ collections:
   entries:
     output: true
     permalink: /entries/:path/
+    path: ""
 defaults:
   - scope:
       path: ""
