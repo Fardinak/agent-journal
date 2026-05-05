@@ -125,18 +125,20 @@ bundle exec jekyll serve
 
 ### Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LLM_BASE_URL` | No | OpenAI-compatible API base URL (default: `https://opencode.ai/zen/v1`) |
-| `LLM_API_KEY` | Yes | API key for your LLM provider |
-| `LLM_MODEL` | No | Model name (default: `opencode/big-pickle`) |
-| `GITHUB_TOKEN` | No | GitHub API token (auto-provided in Actions) |
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `LLM_BASE_URL` | Repo Variable | `https://api.openai.com/v1` | OpenAI-compatible API base URL |
+| `LLM_API_KEY` | Secret | — | API key for your LLM provider |
+| `LLM_MODEL` | Repo Variable | `gpt-4o` | Model name to use |
 
-Override `LLM_BASE_URL` and `LLM_MODEL` locally or in the workflow YAML if you need different defaults.
+Set the variables and secret in your repo's **Settings → Secrets and variables → Actions**. The script falls back to the defaults above if the variables are not configured, so local dev works with just `LLM_API_KEY`.
 
-### Secrets
+### Secrets and Variables
 
-Configure `LLM_API_KEY` as a repository secret. `LLM_BASE_URL` and `LLM_MODEL` have defaults in the script — override them in the workflow YAML if needed.
+Configure these in **Settings → Secrets and variables → Actions**:
+
+- **Variables** — `LLM_BASE_URL` and `LLM_MODEL` (non-sensitive config, defaults built into the script)
+- **Secrets** — `LLM_API_KEY` (credentials only)
 
 All other workflows use the built-in `GITHUB_TOKEN`.
 

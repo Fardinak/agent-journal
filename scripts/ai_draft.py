@@ -4,9 +4,9 @@ AI Research Draft — takes a candidate from candidates.json and produces a
 draft journal entry using an OpenAI-compatible LLM provider.
 
 Environment variables:
-  LLM_BASE_URL  — API base URL (default: https://opencode.ai/zen/v1)
+  LLM_BASE_URL  — API base URL (default: https://api.openai.com/v1)
   LLM_API_KEY   — API key (required)
-  LLM_MODEL     — Model name (default: opencode/big-pickle)
+  LLM_MODEL     — Model name (default: gpt-4o)
 
 Usage: python scripts/ai_draft.py --candidate "LangSmith"
 
@@ -30,9 +30,9 @@ CANDIDATES_PATH = os.path.join(ROOT_DIR, "candidates.json")
 
 GITHUB_API = "https://api.github.com"
 
-LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "https://opencode.ai/zen/v1")
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL") or "https://api.openai.com/v1"
 LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
-LLM_MODEL = os.environ.get("LLM_MODEL", "opencode/big-pickle")
+LLM_MODEL = os.environ.get("LLM_MODEL") or "gpt-4o"
 
 if not LLM_API_KEY:
     print("ERROR: Set LLM_API_KEY environment variable", file=sys.stderr)
@@ -251,7 +251,7 @@ def main() -> None:
         print("ERROR: Could not fetch any context (README or releases)", file=sys.stderr)
         sys.exit(1)
 
-    print("Calling OpenCode Zen API...")
+    print("Calling LLM API...")
     prompt = build_prompt(candidate, readme, releases, homepage)
 
     try:

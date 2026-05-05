@@ -30,7 +30,9 @@ jobs:
       - name: Generate draft entry
         run: python scripts/ai_draft.py --candidate "${{ inputs.candidate_name }}"
         env:
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create branch and commit
