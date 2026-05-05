@@ -44,7 +44,10 @@ def load_candidates() -> list[dict]:
 
 
 def github_headers() -> dict[str, str]:
-    headers = {"Accept": "application/vnd.github+json"}
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "AgentJournal/1.0 (Signal Detection Script)"
+    }
     token = os.environ.get("GITHUB_TOKEN")
     if token:
         headers["Authorization"] = f"Bearer {token}"
