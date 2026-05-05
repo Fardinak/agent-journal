@@ -12,6 +12,7 @@ Usage: python scripts/signal_detection.py
 import json
 import os
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 
 import requests
@@ -109,7 +110,7 @@ def calculate_star_delta(stars: list[dict]) -> dict[str, int]:
     Calculate 7-day rolling star delta and 30-day average.
     Returns {"delta_7d": int, "avg_30d": float}.
     """
-    now = datetime.now(timezone.utc)
+    now = datetime.now().replace(tzinfo=timezone.utc)
     star_dates = []
     for entry in stars:
         try:
@@ -147,11 +148,12 @@ def fetch_npm_downloads(package: str) -> dict[str, int]:
     Fetch weekly download counts from npm registry API.
     Returns {"current_week": int, "previous_week": int}.
     """
-    now = datetime.now(timezone.utc)
     current_end = now - timedelta(days=1)
     current_start = current_end - timedelta(days=6)
     previous_end = current_start - timedelta(days=1)
     previous_start = previous_end - timedelta(days=6)
+
+    now = datetime.now().replace(tzinfo=timezone.utc)
 
     def _fetch_range(start, end):
         url = f"{NPM_API}/{start.strftime('%Y-%m-%d')}:{end.strftime('%Y-%m-%d')}/{package}"
@@ -185,33 +187,45 @@ def dedup_key(candidate: dict) -> str:
 
 
 def main() -> None:
+    print("[INFO] Starting signal detection...")
     if not os.path.exists(WATCHLIST_PATH):
         print(f"ERROR: {WATCHLIST_PATH} not found", file=sys.stderr)
         sys.exit(1)
 
     watchlist = load_json(WATCHLIST_PATH)
+    print(f"[INFO] Loaded {len(watchlist)} items from watchlist")
+    
     existing_candidates = load_candidates()
     existing_keys = {dedup_key(c) for c in existing_candidates}
+    print(f"[INFO] Loaded {len(existing_candidates)} existing candidates")
 
     new_candidates: list[dict] = []
-    detected_at = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    detected_at = datetime.now().replace(tzinfo=timezone.utc).strftime("%Y-%m-%d")
+    print(f"[INFO] Detection date: {detected_at}")
 
-    for item in watchlist:
+    for idx, item in enumerate(watchlist):
         name = item.get("name", "")
         repo = item.get("github", "")
         npm = item.get("npm")
         ecosystem = item.get("ecosystem", [])
+        
+        print(f"[{idx+1}/{len(watchlist)}] Checking {name}...")
 
         if not name or not repo:
             print(f"[WARN] Skipping watchlist item with missing name or github: {item}", file=sys.stderr)
             continue
 
         # --- GitHub stars check ---
+        stars_fetch_start = time.time()
         if repo:
+            print(f"  [INFO] Fetching GitHub stars for {repo}...")
             stars = fetch_star_history(repo)
+            print(f"  [INFO] Fetched {len(stars)} stars in {time.time() - stars_fetch_start:.1f}s")
+            
             metrics = calculate_star_delta(stars)
             delta_7d = metrics["delta_7d"]
             avg_30d = metrics["avg_30d"]
+            print(f"  [INFO] 7d delta: {delta_7d}, 30d avg: {avg_30d:.1f}")
 
             if is_anomaly(delta_7d, avg_30d):
                 key = dedup_key({"name": name, "detected_at": detected_at})
@@ -229,7 +243,9 @@ def main() -> None:
                     print(f"[SIGNAL] {name}: +{delta_7d} stars in 7 days (30-day avg: {avg_30d:.1f})")
 
         # --- npm downloads check ---
+        npm_fetch_start = time.time()
         if npm:
+            print(f"  [INFO] Fetching npm downloads for {npm}...")
             downloads = fetch_npm_downloads(npm)
             current = downloads["current_week"]
             previous = downloads["previous_week"]
@@ -248,7 +264,8 @@ def main() -> None:
                     }
                     new_candidates.append(candidate)
                     existing_keys.add(key)
-                    print(f"[SIGNAL] {name}: npm downloads +{current - previous} WoW")
+                    print(f"  [INFO] NPM delta: +{current - previous} WoW in {time.time() - npm_fetch_start:.1f}s")
+                    print(f"[SIGNAL] {name}: npm downloads +{current - previous} WoW", file=sys.stderr)
                 elif new_candidates:
                     # Update existing candidate from this run with npm data
                     for c in new_candidates:
@@ -258,9 +275,9 @@ def main() -> None:
     if new_candidates:
         all_candidates = existing_candidates + new_candidates
         save_json(CANDIDATES_PATH, all_candidates)
-        print(f"\nDetected {len(new_candidates)} new signal(s). candidates.json updated.")
+        print(f"\n[INFO] Detected {len(new_candidates)} new signal(s). candidates.json updated.")
     else:
-        print("\nNo new signals detected.")
+        print("\n[INFO] No new signals detected.")
 
 
 if __name__ == "__main__":
