@@ -20,6 +20,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 
 import requests
 from openai import OpenAI
@@ -61,7 +62,10 @@ def find_candidate(name: str) -> dict | None:
 
 
 def github_headers() -> dict[str, str]:
-    headers = {"Accept": "application/vnd.github+json"}
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "AgentJournal/1.0 (AI Research Draft Script)"
+    }
     token = os.environ.get("GITHUB_TOKEN")
     if token:
         headers["Authorization"] = f"Bearer {token}"
@@ -135,10 +139,16 @@ def fetch_homepage(repo: str) -> str:
         return ""
 
 
+import unicodedata
+
+
 def slugify(text: str) -> str:
     """Convert text to a URL-safe slug."""
+    # Normalize unicode characters (NFC)
+    text = unicodedata.normalize("NFC", text)
     text = text.lower().strip()
-    text = re.sub(r"[^\w\s-]", "", text)
+    # Keep only word characters, spaces, and hyphens (including unicode word chars)
+    text = re.sub(r"[^\w\s-]", "", text, flags=re.UNICODE)
     text = re.sub(r"[\s_]+", "-", text)
     text = re.sub(r"-+", "-", text)
     return text.strip("-")
@@ -181,7 +191,25 @@ Rules:
 Respond ONLY with the complete markdown file including frontmatter. No preamble."""
 
 
-def write_entry(candidate: dict, content: str) -> str:
+def validate_response(content: str) -> bool:
+    """Validate that the LLM response has proper frontmatter and body."""
+    if not content:
+        print("ERROR: Empty response from API", file=sys.stderr)
+        return False
+    if "---" not in content:
+        print("ERROR: Response missing frontmatter delimiter ---", file=sys.stderr)
+        return False
+    parts = content.split("---", 2)
+    if len(parts) < 3:
+        print("ERROR: Response missing frontmatter or body", file=sys.stderr)
+        return False
+    frontmatter = parts[1]
+    required_fields = ["title:", "date:", "ecosystem:", "category:", "significance:", "reach_for_when:"]
+    missing = [f for f in required_fields if f not in frontmatter]
+    if missing:
+        print(f"ERROR: Response missing frontmatter fields: {', '.join(missing)}", file=sys.stderr)
+        return False
+    return True
     """
     Write the draft entry to the correct ecosystem directory.
     Returns the file path.
@@ -260,8 +288,8 @@ def main() -> None:
             messages=[{"role": "user", "content": prompt}],
         )
         content = response.choices[0].message.content
-        if not content:
-            print("ERROR: Empty response from API", file=sys.stderr)
+        if not validate_response(content):
+            print("ERROR: Invalid response from API", file=sys.stderr)
             sys.exit(1)
     except Exception as e:
         print(f"ERROR: API call failed: {e}", file=sys.stderr)
