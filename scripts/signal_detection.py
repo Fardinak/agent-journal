@@ -158,7 +158,10 @@ def fetch_npm_downloads(package: str) -> dict[str, int]:
         resp = requests.get(url, timeout=15)
         resp.raise_for_status()
         data = resp.json()
-        return data.get("downloads", 0)
+        downloads_list = data.get("downloads", [])
+        if isinstance(downloads_list, list):
+            return sum(d["downloads"] for d in downloads_list)
+        return 0
 
     try:
         current_week = _fetch_range(current_start, current_end)
