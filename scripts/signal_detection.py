@@ -2,8 +2,8 @@
 """
 Signal Detection — monitors GitHub stars and npm downloads for anomalies.
 
-Reads watchlist.json, calculates growth deltas, and writes flagged candidates
-to candidates.json. Idempotent: re-running will not produce duplicate entries.
+Reads watchlist.json, gets current star counts from GitHub API, calculates deltas
+from previous run, and writes flagged candidates to candidates.json.
 
 Required: requests, python-frontmatter
 Usage: python scripts/signal_detection.py
@@ -21,9 +21,13 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 WATCHLIST_PATH = os.path.join(ROOT_DIR, "watchlist.json")
 CANDIDATES_PATH = os.path.join(ROOT_DIR, "candidates.json")
+STAR_COUNTS_PATH = os.path.join(ROOT_DIR, "star_counts.json")
 
 GITHUB_API = "https://api.github.com"
 NPM_API = "https://api.npmjs.org/downloads/range"
+
+# Threshold for flagging significant star growth in a single run
+STAR_ANOMALY_THRESHOLD = 50
 
 
 def load_json(path: str) -> object:
@@ -43,6 +47,18 @@ def load_candidates() -> list[dict]:
     return load_json(CANDIDATES_PATH)
 
 
+def load_star_counts() -> dict[str, dict]:
+    """Load previous star counts from last run."""
+    if not os.path.exists(STAR_COUNTS_PATH):
+        return {}
+    return load_json(STAR_COUNTS_PATH)
+
+
+def save_star_counts(counts: dict[str, dict]) -> None:
+    """Save current star counts for next run comparison."""
+    save_json(STAR_COUNTS_PATH, counts)
+
+
 def github_headers() -> dict[str, str]:
     headers = {
         "Accept": "application/vnd.github+json",
@@ -54,103 +70,28 @@ def github_headers() -> dict[str, str]:
     return headers
 
 
-def fetch_star_history(repo: str) -> list[dict]:
-    """
-    Fetch star timeline via GitHub timeline endpoint.
-    Falls back to basic repo info if timeline is unavailable.
-    Returns list of dicts with 'starred_at' keys (ISO timestamps).
-    """
+def fetch_repo_info(repo: str) -> dict:
+    """Fetch current star count and info from repository."""
     repo = repo.strip("/")
-    # Method 1: stargazers timeline (paginated, gives per-star timestamps)
-    # This endpoint returns starred_at for each stargazer, reverse chronological
-    url = f"{GITHUB_API}/repos/{repo}/stargazers"
-    params = {"per_page": 100, "Accept": "application/vnd.github.star+json"}
-
-    all_stars = []
+    url = f"{GITHUB_API}/repos/{repo}"
+    
     try:
-        resp = requests.get(url, headers=github_headers(), params=params, timeout=30)
+        resp = requests.get(url, headers=github_headers(), timeout=30)
         resp.raise_for_status()
-        page_data = resp.json()
-
-        # Each item has a starred_at field
-        for item in page_data:
-            if isinstance(item, dict) and "starred_at" in item:
-                all_stars.append(item["starred_at"])
-
-        # Check for more pages (pagination)
-        # We only grab up to 1000 stars for efficiency
-        link_header = resp.headers.get("Link", "")
-        while "next" in link_header and len(all_stars) < 1000:
-            next_url = _extract_next_url(link_header)
-            if not next_url:
-                break
-            resp = requests.get(next_url, headers=github_headers(), timeout=30)
-            resp.raise_for_status()
-            for item in resp.json():
-                if isinstance(item, dict) and "starred_at" in item:
-                    all_stars.append(item["starred_at"])
-            link_header = resp.headers.get("Link", "")
+        data = resp.json()
+        return {
+            "stargazers_count": data.get("stargazers_count", 0),
+            "updated_at": data.get("updated_at"),
+            "name": data.get("name"),
+            "full_name": data.get("full_name"),
+        }
     except requests.RequestException as e:
-        print(f"[WARN] Failed to fetch stargazers for {repo}: {e}", file=sys.stderr)
-        return []
-
-    # Reverse to chronological order
-    all_stars.reverse()
-    return [{"starred_at": s} for s in all_stars]
-
-
-def _extract_next_url(link_header: str) -> str | None:
-    """Extract the 'next' page URL from GitHub Link header."""
-    for part in link_header.split(","):
-        if 'rel="next"' in part:
-            url_part = part.split(";")[0].strip()
-            return url_part.strip("<>")
-    return None
-
-
-def calculate_star_delta(stars: list[dict]) -> dict[str, int]:
-    """
-    Calculate 7-day rolling star delta and 30-day average.
-    Returns {"delta_7d": int, "avg_30d": float}.
-    """
-    now = datetime.now().replace(tzinfo=timezone.utc)
-    star_dates = []
-    for entry in stars:
-        try:
-            dt = datetime.fromisoformat(entry["starred_at"].replace("Z", "+00:00"))
-            star_dates.append(dt)
-        except (ValueError, KeyError):
-            continue
-
-    if not star_dates:
-        return {"delta_7d": 0, "avg_30d": 0.0}
-
-    # 7-day delta
-    seven_days_ago = now - timedelta(days=7)
-    delta_7d = sum(1 for d in star_dates if d >= seven_days_ago)
-
-    # 30-day average per 7-day period
-    thirty_days_ago = now - timedelta(days=30)
-    delta_30d = sum(1 for d in star_dates if d >= thirty_days_ago)
-    # Average 7-day window within the 30-day period
-    avg_30d = delta_30d / (30 / 7) if delta_30d > 0 else 0.0
-
-    return {"delta_7d": delta_7d, "avg_30d": avg_30d}
-
-
-def is_anomaly(delta_7d: int, avg_30d: float) -> bool:
-    """Flag if 7-day delta exceeds 3x the 30-day average."""
-    if avg_30d == 0:
-        # No baseline — flag if absolute delta is significant (>50 stars)
-        return delta_7d > 50
-    return delta_7d > 3 * avg_30d
+        print(f"[WARN] Failed to fetch repo info for {repo}: {e}", file=sys.stderr)
+        return {"stargazers_count": 0, "updated_at": None}
 
 
 def fetch_npm_downloads(package: str) -> dict[str, int]:
-    """
-    Fetch weekly download counts from npm registry API.
-    Returns {"current_week": int, "previous_week": int}.
-    """
+    """Fetch weekly download counts from npm registry API."""
     now = datetime.now().replace(tzinfo=timezone.utc)
     current_end = now - timedelta(days=1)
     current_start = current_end - timedelta(days=6)
@@ -179,7 +120,7 @@ def fetch_npm_downloads(package: str) -> dict[str, int]:
 def is_npm_anomaly(current: int, previous: int) -> bool:
     """Flag if week-over-week growth exceeds 40%."""
     if previous == 0:
-        return current > 1000  # absolute threshold for new packages
+        return current > 1000
     growth = (current - previous) / previous
     return growth > 0.40
 
@@ -201,7 +142,12 @@ def main() -> None:
     existing_keys = {dedup_key(c) for c in existing_candidates}
     print(f"[INFO] Loaded {len(existing_candidates)} existing candidates")
 
+    # Load previous star counts for delta calculation
+    previous_star_counts = load_star_counts()
+    print(f"[INFO] Loaded {len(previous_star_counts)} previous star counts")
+
     new_candidates: list[dict] = []
+    current_star_counts: dict[str, dict] = {}
     detected_at = datetime.now().replace(tzinfo=timezone.utc).strftime("%Y-%m-%d")
     print(f"[INFO] Detection date: {detected_at}")
 
@@ -221,28 +167,37 @@ def main() -> None:
         stars_fetch_start = time.time()
         if repo:
             print(f"  [INFO] Fetching GitHub stars for {repo}...")
-            stars = fetch_star_history(repo)
-            print(f"  [INFO] Fetched {len(stars)} stars in {time.time() - stars_fetch_start:.1f}s")
+            repo_info = fetch_repo_info(repo)
+            current_stars = repo_info.get("stargazers_count", 0)
+            current_star_counts[repo] = {
+                "count": current_stars,
+                "updated_at": repo_info.get("updated_at"),
+            }
+            print(f"  [INFO] Current stars: {current_stars} in {time.time() - stars_fetch_start:.1f}s")
             
-            metrics = calculate_star_delta(stars)
-            delta_7d = metrics["delta_7d"]
-            avg_30d = metrics["avg_30d"]
-            print(f"  [INFO] 7d delta: {delta_7d}, 30d avg: {avg_30d:.1f}")
-
-            if is_anomaly(delta_7d, avg_30d):
+            # Calculate delta from previous run
+            prev = previous_star_counts.get(repo, {})
+            prev_count = prev.get("count", 0) if prev else 0
+            delta = current_stars - prev_count
+            
+            if prev_count > 0 and delta > 0:
+                print(f"  [INFO] Delta since last run: +{delta}")
+            
+            # Flag significant growth
+            if delta >= STAR_ANOMALY_THRESHOLD:
                 key = dedup_key({"name": name, "detected_at": detected_at})
                 if key not in existing_keys:
                     candidate = {
                         "name": name,
                         "repo_url": f"https://github.com/{repo}",
                         "ecosystem": ecosystem,
-                        "stars_delta": delta_7d,
+                        "stars_delta": delta,
                         "npm_downloads_delta": None,
                         "detected_at": detected_at,
                     }
                     new_candidates.append(candidate)
                     existing_keys.add(key)
-                    print(f"[SIGNAL] {name}: +{delta_7d} stars in 7 days (30-day avg: {avg_30d:.1f})")
+                    print(f"[SIGNAL] {name}: +{delta} stars since last run")
 
         # --- npm downloads check ---
         npm_fetch_start = time.time()
@@ -253,7 +208,6 @@ def main() -> None:
             previous = downloads["previous_week"]
 
             if is_npm_anomaly(current, previous):
-                # Check if we already flagged this repo from GitHub stars today
                 key = dedup_key({"name": name, "detected_at": detected_at})
                 if key not in existing_keys:
                     candidate = {
@@ -269,10 +223,13 @@ def main() -> None:
                     print(f"  [INFO] NPM delta: +{current - previous} WoW in {time.time() - npm_fetch_start:.1f}s")
                     print(f"[SIGNAL] {name}: npm downloads +{current - previous} WoW", file=sys.stderr)
                 elif new_candidates:
-                    # Update existing candidate from this run with npm data
                     for c in new_candidates:
                         if c["name"] == name and c["detected_at"] == detected_at:
                             c["npm_downloads_delta"] = current - previous
+
+    # Save current star counts for next run
+    save_star_counts(current_star_counts)
+    print(f"[INFO] Saved {len(current_star_counts)} star counts")
 
     if new_candidates:
         all_candidates = existing_candidates + new_candidates
