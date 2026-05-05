@@ -151,12 +151,11 @@ def fetch_npm_downloads(package: str) -> dict[str, int]:
     Fetch weekly download counts from npm registry API.
     Returns {"current_week": int, "previous_week": int}.
     """
+    now = datetime.now().replace(tzinfo=timezone.utc)
     current_end = now - timedelta(days=1)
     current_start = current_end - timedelta(days=6)
     previous_end = current_start - timedelta(days=1)
     previous_start = previous_end - timedelta(days=6)
-
-    now = datetime.now().replace(tzinfo=timezone.utc)
 
     def _fetch_range(start, end):
         url = f"{NPM_API}/{start.strftime('%Y-%m-%d')}:{end.strftime('%Y-%m-%d')}/{package}"
