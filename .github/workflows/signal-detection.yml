@@ -30,14 +30,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYTHONUNBUFFERED: '1'
 
-      - name: Commit candidates.json and star_counts.json if changed
+      - name: Commit star_counts.json if changed
         run: |
-          if git diff --quiet candidates.json star_counts.json 2>/dev/null; then
-            echo "No changes to candidates.json or star_counts.json"
+          if git diff --quiet star_counts.json 2>/dev/null; then
+            echo "No changes to star_counts.json"
           else
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add candidates.json star_counts.json
-            git commit -m "chore: update candidates.json and star_counts.json [skip ci]"
+            git add star_counts.json
+            git commit -m "chore: update star_counts.json [skip ci]"
             git push
           fi

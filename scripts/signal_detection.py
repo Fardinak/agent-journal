@@ -43,50 +43,6 @@ def save_json(path: str, data: object) -> None:
         f.write("\n")
 
 
-def trigger_draft_workflow(candidate_name: str) -> bool:
-    """Trigger the draft-entry workflow for a new candidate."""
-    token = os.environ.get("GITHUB_TOKEN")
-    if not token:
-        print("[WARN] No GITHUB_TOKEN, skipping dispatch", file=sys.stderr)
-        return False
-    
-    # Get owner/repo from git remote
-    try:
-        result = subprocess.run(
-            ["git", "remote", "geturl", "origin"],
-            capture_output=True, text=True, cwd=ROOT_DIR
-        )
-        remote_url = result.stdout.strip()
-        # Parse from git@github.com:owner/repo.git or https://github.com/owner/repo
-        match = re.search(r"github\.com[/:]([^/]+)/([^/.]+)", remote_url)
-        if match:
-            owner, repo = match.groups()
-        else:
-            print(f"[WARN] Could not parse owner/repo from {remote_url}", file=sys.stderr)
-            return False
-    except Exception as e:
-        print(f"[WARN] Could not get git remote: {e}", file=sys.stderr)
-        return False
-    
-    url = f"{GITHUB_API}/repos/{owner}/{repo}/dispatches"
-    payload = {
-        "event_type": "new_candidate",
-        "client_payload": {"name": candidate_name}
-    }
-    
-    try:
-        resp = requests.post(url, json=payload, headers=github_headers(), timeout=30)
-        if resp.status_code == 204:
-            print(f"[INFO] Triggered draft workflow for {candidate_name}")
-            return True
-        else:
-            print(f"[WARN] Dispatch failed: {resp.status_code} {resp.text}", file=sys.stderr)
-            return False
-    except requests.RequestException as e:
-        print(f"[WARN] Dispatch error: {e}", file=sys.stderr)
-        return False
-
-
 def load_candidates() -> list[dict]:
     if not os.path.exists(CANDIDATES_PATH):
         return []
@@ -240,6 +196,9 @@ def main() -> None:
                         "stars_delta": delta,
                         "npm_downloads_delta": None,
                         "detected_at": detected_at,
+                        "pending_pr": True,  # Mark as needing PR creation
+                        "pr_url": None,
+                        "pr_created_at": None,
                     }
                     new_candidates.append(candidate)
                     existing_keys.add(key)
@@ -263,6 +222,9 @@ def main() -> None:
                         "stars_delta": None,
                         "npm_downloads_delta": current - previous,
                         "detected_at": detected_at,
+                        "pending_pr": True,  # Mark as needing PR creation
+                        "pr_url": None,
+                        "pr_created_at": None,
                     }
                     new_candidates.append(candidate)
                     existing_keys.add(key)
@@ -277,18 +239,14 @@ def main() -> None:
     save_star_counts(current_star_counts)
     print(f"[INFO] Saved {len(current_star_counts)} star counts")
 
-    # Trigger draft workflows for new candidates
-    triggered = []
-    for candidate in new_candidates:
-        if trigger_draft_workflow(candidate["name"]):
-            triggered.append(candidate["name"])
+    # Note: We no longer trigger workflows directly.
+    # The separate 'process-candidates' workflow reads pending_pr candidates
+    # and creates PRs for each. This decouples detection from PR creation.
 
     if new_candidates:
         all_candidates = existing_candidates + new_candidates
         save_json(CANDIDATES_PATH, all_candidates)
-        print(f"\n[INFO] Detected {len(new_candidates)} new signal(s).")
-        if triggered:
-            print(f"[INFO] Triggered draft workflow(s) for: {', '.join(triggered)}")
+        print(f"\n[INFO] Detected {len(new_candidates)} new signal(s). Candidates pending PR creation.")
     else:
         print("\n[INFO] No new signals detected.")
 

@@ -27,3 +27,7 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Operational state (not committed - managed by workflows)
+candidates.json
+star_counts.json

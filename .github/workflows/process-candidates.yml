@@ -1,0 +1,231 @@
+name: Process Candidates
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no actual PRs created)'
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    # Run every hour to process pending candidates
+    - cron: '0 * * * *'
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Find pending candidates
+        id: find_pending
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+          from datetime import datetime, timezone
+
+          кандидаты_path = os.environ.get("CANDIDATES_PATH", "candidates.json")
+          
+          if not os.path.exists(кандидаты_path):
+            print("::set-output name=pending_json::[]")
+            print("No candidates.json found")
+            exit(0)
+
+          with open(кандидаты_path, "r") as f:
+            candidates = json.load(f)
+
+          pending = [c for c in candidates if c.get("pending_pr") == True]
+          
+          print(f"::set-output name=pending_json::{json.dumps(pending)}")
+          print(f"Found {len(pending)} pending candidates")
+          
+          # Also output for later steps
+          with open(os.environ.get("GITHUB_OUTPUT"), "a") as f:
+            f.write(f"pending_count={len(pending)}\n")
+          EOF
+
+      - name: Process each pending candidate
+        if: steps.find_pending.outputs.pending_count > 0
+        run: |
+          PENDING_JSON='${{ steps.find_pending.outputs.pending_json }}'
+          DRY_RUN=${{ inputs.dry_run }}
+
+          # Parse JSON properly
+          PENDING=$(echo "$PENDING_JSON" | python3 -c "import sys,json; print('\n'.join(json.load(sys.stdin))))" 2>/dev/null || echo "")
+
+          echo "Processing candidates:"
+          echo "$PENDING" | while IFS= read -r candidate; do
+            if [ -z "$candidate" ]; then
+              continue
+            fi
+            NAME=$(echo "$candidate" | python3 -c "import sys,json; c=json.load(sys.stdin); print(c.get('name',''))")
+            echo "  - $NAME"
+          done
+
+      - name: Create branch and PR for each candidate
+        if: steps.find_pending.outputs.pending_count > 0 && !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+          import subprocess
+          from datetime import datetime, timezone
+
+          CANDIDATES_PATH = os.environ.get("CANDIDATES_PATH", "candidates.json")
+          DRY_RUN = os.environ.get("DRY_RUN", "false").lower() == "true"
+
+          with open(CANDIDATES_PATH, "r") as f:
+            candidates = json.load(f)
+
+          pending = [c for c in candidates if c.get("pending_pr") == True]
+          
+          if not pending:
+            print("No pending candidates to process")
+            exit(0)
+
+          created_prs = []
+          now = datetime.now(timezone.utc).isoformat()
+
+          for candidate in pending:
+            name = candidate.get("name", "")
+            slug = name.lower().replace(" ", "-").replace("@", "").replace("_", "-")
+            # Clean up slug
+            import re
+            slug = re.sub(r'[^a-z0-9]+', '-', slug).strip('-')
+            
+            branch = f"draft/{slug}"
+            ecosystem = candidate.get("ecosystem", ["llm-tooling"])[0]
+            
+            print(f"Processing: {name} (slug: {slug}, ecosystem: {ecosystem})")
+            
+            # Step 1: Generate draft entry using ai_draft.py
+            result = subprocess.run(
+                ["python3", "scripts/ai_draft.py", "--candidate", name],
+                capture_output=True, text=True
+            )
+            
+            if result.returncode != 0:
+                print(f"  [ERROR] ai_draft.py failed: {result.stderr}")
+                continue
+            
+            # Find the created entry file
+            entry_file = None
+            for root, dirs, files in os.walk("entries"):
+                for f in files:
+                    if f.endswith(".md") and f"{slug}" in f.lower():
+                        entry_file = os.path.join(root, f)
+                        break
+                if entry_file:
+                    break
+            
+            if not entry_file:
+                # Try alternative: most recently modified .md in entries/
+                import glob
+                md_files = glob.glob("entries/**/*.md")
+                if md_files:
+                    md_files.sort(key=os.path.getmtime, reverse=True)
+                    entry_file = md_files[0]
+            
+            if not entry_file:
+                print(f"  [WARN] Could not find entry file for {name}")
+                continue
+            
+            print(f"  Entry file: {entry_file}")
+            
+            # Step 2: Create branch and commit
+            subprocess.run(["git", "checkout", "-b", branch], capture_output=True)
+            subprocess.run(["git", "add", entry_file], capture_output=True)
+            
+            commit_result = subprocess.run(
+                ["git", "commit", "-m", f"draft: add entry for {name}"],
+                capture_output=True, text=True
+            )
+            
+            if commit_result.returncode != 0:
+                print(f"  [WARN] Commit may be empty or already exists: {commit_result.stderr}")
+                # Continue anyway - branch exists
+            
+            # Step 3: Push branch
+            push_result = subprocess.run(
+                ["git", "push", "origin", branch, "--force"],
+                capture_output=True, text=True
+            )
+            
+            if push_result.returncode != 0:
+                print(f"  [ERROR] Push failed: {push_result.stderr}")
+                continue
+            
+            # Step 4: Create PR
+            pr_title = f"Draft entry: {name}"
+            pr_body = f"""AI-generated draft entry for **{name}**. See the editorial checklist in the PR template.
+            
+            Signal: {candidate.get('stars_delta', 'N/A')} stars / {candidate.get('npm_downloads_delta', 'N/A')} npm downloads
+            """
+            
+            pr_result = subprocess.run(
+                [
+                    "gh", "pr", "create",
+                    "--base", "main",
+                    "--head", branch,
+                    "--title", pr_title,
+                    "--body", pr_body,
+                    "--label", "draft"
+                ],
+                capture_output=True, text=True,
+                env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN")}
+            )
+            
+            if pr_result.returncode != 0:
+                print(f"  [ERROR] PR creation failed: {pr_result.stderr}")
+                continue
+            
+            pr_url = pr_result.stdout.strip()
+            print(f"  [SUCCESS] Created PR: {pr_url}")
+            created_prs.append({"name": name, "pr_url": pr_url, "created_at": now})
+            
+            # Step 5: Update candidates.json with PR info
+            for c in candidates:
+                if c.get("name") == name and c.get("pending_pr") == True:
+                    c["pending_pr"] = False
+                    c["pr_url"] = pr_url
+                    c["pr_created_at"] = now
+                    break
+
+          # Save updated candidates.json
+          if created_prs:
+            with open(CANDIDATES_PATH, "w") as f:
+                json.dump(candidates, f, indent=2, default=str)
+                f.write("\n")
+            
+            print(f"Updated {CANDIDATES_PATH} with PR URLs")
+            
+            # Commit the updated candidates.json (optional - can skip if desired)
+            subprocess.run(["git", "add", CANDIDATES_PATH], capture_output=True)
+            subprocess.run(
+                ["git", "commit", "-m", f"chore: mark candidates with PRs: {', '.join([p['name'] for p in created_prs])}"],
+                capture_output=True
+            )
+            subprocess.run(["git", "push"], capture_output=True)
+            
+            print(f"Successfully processed {len(created_prs)} candidate(s)")
+          else:
+            print("No PRs created")
+          EOF

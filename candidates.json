@@ -8,7 +8,10 @@
     ],
     "stars_delta": 873,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": false,
+    "pr_url": "https://github.com/fardin/agent-journal/pull/15",
+    "pr_created_at": "2026-05-05"
   },
   {
     "name": "LangGraph",
@@ -19,7 +22,10 @@
     ],
     "stars_delta": 31228,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   },
   {
     "name": "CrewAI",
@@ -30,7 +36,10 @@
     ],
     "stars_delta": 50669,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": false,
+    "pr_url": "https://github.com/fardin/agent-journal/pull/16",
+    "pr_created_at": "2026-05-05"
   },
   {
     "name": "LlamaIndex",
@@ -41,7 +50,10 @@
     ],
     "stars_delta": 49138,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   },
   {
     "name": "Vercel AI SDK",
@@ -52,7 +64,10 @@
     ],
     "stars_delta": 24030,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   },
   {
     "name": "LiteLLM",
@@ -63,7 +78,10 @@
     ],
     "stars_delta": 45736,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   },
   {
     "name": "OpenTelemetry Auto-Instrumentation",
@@ -74,7 +92,10 @@
     ],
     "stars_delta": 1037,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   },
   {
     "name": "tRPC",
@@ -85,7 +106,10 @@
     ],
     "stars_delta": 40146,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   },
   {
     "name": "Drizzle ORM",
@@ -96,7 +120,10 @@
     ],
     "stars_delta": 34208,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   },
   {
     "name": "Hono",
@@ -106,6 +133,9 @@
     ],
     "stars_delta": 30296,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05"
+    "detected_at": "2026-05-05",
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   }
 ]
