@@ -1,2 +1,4 @@
 requests
 python-frontmatter
+beautifulsoup4
+python-dateutil

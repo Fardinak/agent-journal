@@ -1,0 +1,171 @@
+[
+  {
+    "name": "whatcable",
+    "github": "darrylmorley/whatcable",
+    "description": "Show HN: WhatCable, a tiny menu bar app for inspecting USB-C cables",
+    "hn_points": 558,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "ml-sharp-web",
+    "github": "bring-shrubbery/ml-sharp-web",
+    "description": "Show HN: Apple's SHARP running in the browser via ONNX runtime web",
+    "hn_points": 182,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "pollen",
+    "github": "sambigeara/pollen",
+    "description": "Show HN: Pollen \u2013 distributed WASM runtime, no control plane, single binary",
+    "hn_points": 135,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "ableton-live-mcp",
+    "github": "bschoepke/ableton-live-mcp",
+    "description": "Show HN: Ableton Live MCP",
+    "hn_points": 116,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "dac",
+    "github": "bruin-data/dac",
+    "description": "Show HN: DAC \u2013 open-source dashboard as code tool for agents and humans",
+    "hn_points": 116,
+    "ecosystem": [
+      "typescript",
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "winpodx",
+    "github": "kernalix7/winpodx",
+    "description": "Show HN: Winpodx \u2013 run Windows apps on Linux as native windows",
+    "hn_points": 98,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "agent-desktop",
+    "github": "lahfir/agent-desktop",
+    "description": "Show HN: Agent-desktop \u2013 Native desktop automation CLI for AI agents",
+    "hn_points": 98,
+    "ecosystem": [
+      "typescript",
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "adblock-rust-manager",
+    "github": "electricant/adblock-rust-manager",
+    "description": "Show HN: Adblock-rust Manager \u2013 Firefox extension to enable the Brave ad blocker",
+    "hn_points": 95,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "nfsdiag",
+    "github": "lsferreira42/nfsdiag",
+    "description": "Show HN: nfsdiag \u2013 A NFS diagnostic application",
+    "hn_points": 77,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "loopsy",
+    "github": "leox255/loopsy",
+    "description": "Show HN: Loopsy, a way for terminals and AI agents on different machines to talk",
+    "hn_points": 58,
+    "ecosystem": [
+      "typescript",
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "kanwas",
+    "github": "kanwas-ai/kanwas",
+    "description": "Show HN: Kanwas, open-source shared context board for teams and agents",
+    "hn_points": 57,
+    "ecosystem": [
+      "typescript",
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "rvcore",
+    "github": "lalitshankarch/rvcore",
+    "description": "Show HN: I built a RISC-V emulator that runs DOOM",
+    "hn_points": 48,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "gitgres",
+    "github": "calebwin/gitgres",
+    "description": "Show HN: My Private GitHub on Postgres",
+    "hn_points": 42,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "destiny",
+    "github": "xodn348/destiny",
+    "description": "Show HN: Destiny \u2013 Claude Code's fortune Teller skill",
+    "hn_points": 41,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  },
+  {
+    "name": "TRiP",
+    "github": "carlovalenti/TRiP",
+    "description": "Show HN: TRiP \u2013 a complete transformer engine in C built from scratch just by me",
+    "hn_points": 38,
+    "ecosystem": [
+      "llm-tooling"
+    ],
+    "detected_by": "hn_show",
+    "detected_at": "2026-05-05"
+  }
+]

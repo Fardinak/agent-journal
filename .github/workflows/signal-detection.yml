@@ -5,7 +5,7 @@ on:
     - cron: '0 6 * * *'
 
 jobs:
-  detect:
+  discover:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,8 +24,31 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run signal detection
-        run: python -u scripts/signal_detection.py
+      - name: Run watchlist monitor
+        run: python -u scripts/watchlist_monitor.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONUNBUFFERED: '1'
+
+      - name: Run discover trending
+        run: python -u scripts/discover_trending.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONUNBUFFERED: '1'
+
+      - name: Run discover registry
+        run: python -u scripts/discover_registry.py
+        env:
+          PYTHONUNBUFFERED: '1'
+
+      - name: Run discover dependents
+        run: python -u scripts/discover_dependents.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONUNBUFFERED: '1'
+
+      - name: Run score candidates
+        run: python -u scripts/score_candidates.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYTHONUNBUFFERED: '1'
@@ -40,4 +63,17 @@ jobs:
             git add star_counts.json
             git commit -m "chore: update star_counts.json [skip ci]"
             git push
+          fi
+
+      - name: Commit candidates files if changed
+        run: |
+          git status --porcelain
+          if [ -n "$(git status --porcelain | grep -E '^(A|M).*candidates')" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add candidates*.json
+            git commit -m "chore: update candidates from discovery [skip ci]"
+            git push
+          else
+            echo "No candidate changes"
           fi

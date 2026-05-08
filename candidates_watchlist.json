@@ -1,0 +1,144 @@
+[
+  {
+    "name": "LangSmith",
+    "github": "langchain-ai/langsmith-sdk",
+    "npm": "langsmith",
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 874,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "LangGraph",
+    "github": "langchain-ai/langgraph",
+    "npm": "@langchain/langgraph",
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 31244,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "CrewAI",
+    "github": "crewAIInc/crewAI",
+    "npm": null,
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 50685,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "LlamaIndex",
+    "github": "run-llama/llama_index",
+    "npm": "llamaindex",
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 49142,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "Vercel AI SDK",
+    "github": "vercel/ai",
+    "npm": "ai",
+    "ecosystem": [
+      "typescript",
+      "nextjs"
+    ],
+    "stars_delta": 24033,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "LiteLLM",
+    "github": "BerriAI/litellm",
+    "npm": null,
+    "ecosystem": [
+      "python",
+      "llm-tooling"
+    ],
+    "stars_delta": 45757,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "OpenTelemetry Auto-Instrumentation",
+    "github": "open-telemetry/opentelemetry-python-contrib",
+    "npm": null,
+    "ecosystem": [
+      "python",
+      "infrastructure"
+    ],
+    "stars_delta": 1037,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "tRPC",
+    "github": "trpc/trpc",
+    "npm": "@trpc/server",
+    "ecosystem": [
+      "typescript",
+      "nextjs"
+    ],
+    "stars_delta": 40146,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "Drizzle ORM",
+    "github": "drizzle-team/drizzle-orm",
+    "npm": "drizzle-orm",
+    "ecosystem": [
+      "typescript",
+      "nextjs"
+    ],
+    "stars_delta": 34212,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "Hono",
+    "github": "honojs/hono",
+    "npm": "hono",
+    "ecosystem": [
+      "typescript"
+    ],
+    "stars_delta": 30300,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  },
+  {
+    "name": "zustand",
+    "github": "pmndrs/zustand",
+    "npm": "zustand",
+    "ecosystem": [
+      "typescript",
+      "nextjs"
+    ],
+    "stars_delta": 57938,
+    "npm_downloads_delta": null,
+    "detected_at": "2026-05-05",
+    "detected_by": "watchlist_monitor"
+  }
+]

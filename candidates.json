@@ -1,139 +1,318 @@
 [
   {
     "name": "LangSmith",
-    "repo_url": "https://github.com/langchain-ai/langsmith-sdk",
+    "github": "langchain-ai/langsmith-sdk",
+    "npm": "langsmith",
+    "pypi": null,
     "ecosystem": [
       "python",
       "llm-tooling"
     ],
-    "stars_delta": 873,
-    "npm_downloads_delta": null,
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
     "detected_at": "2026-05-05",
-    "pending_pr": false,
-    "pr_url": "https://github.com/fardin/agent-journal/pull/15",
-    "pr_created_at": "2026-05-05"
+    "status": "pending",
+    "repo_url": "https://github.com/langchain-ai/langsmith-sdk",
+    "stars_delta": 874,
+    "npm_downloads_delta": null,
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   },
   {
     "name": "LangGraph",
-    "repo_url": "https://github.com/langchain-ai/langgraph",
+    "github": "langchain-ai/langgraph",
+    "npm": "@langchain/langgraph",
+    "pypi": null,
     "ecosystem": [
       "python",
       "llm-tooling"
     ],
-    "stars_delta": 31228,
-    "npm_downloads_delta": null,
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
     "detected_at": "2026-05-05",
+    "status": "pending",
+    "repo_url": "https://github.com/langchain-ai/langgraph",
+    "stars_delta": 31244,
+    "npm_downloads_delta": null,
     "pending_pr": true,
     "pr_url": null,
     "pr_created_at": null
   },
   {
     "name": "CrewAI",
-    "repo_url": "https://github.com/crewAIInc/crewAI",
+    "github": "crewAIInc/crewAI",
+    "npm": null,
+    "pypi": null,
     "ecosystem": [
       "python",
       "llm-tooling"
     ],
-    "stars_delta": 50669,
-    "npm_downloads_delta": null,
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
     "detected_at": "2026-05-05",
-    "pending_pr": false,
-    "pr_url": "https://github.com/fardin/agent-journal/pull/16",
-    "pr_created_at": "2026-05-05"
+    "status": "pending",
+    "repo_url": "https://github.com/crewAIInc/crewAI",
+    "stars_delta": 50685,
+    "npm_downloads_delta": null,
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
   },
   {
     "name": "LlamaIndex",
-    "repo_url": "https://github.com/run-llama/llama_index",
+    "github": "run-llama/llama_index",
+    "npm": "llamaindex",
+    "pypi": null,
     "ecosystem": [
       "python",
       "llm-tooling"
     ],
-    "stars_delta": 49138,
-    "npm_downloads_delta": null,
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
     "detected_at": "2026-05-05",
+    "status": "pending",
+    "repo_url": "https://github.com/run-llama/llama_index",
+    "stars_delta": 49142,
+    "npm_downloads_delta": null,
     "pending_pr": true,
     "pr_url": null,
     "pr_created_at": null
   },
   {
     "name": "Vercel AI SDK",
-    "repo_url": "https://github.com/vercel/ai",
+    "github": "vercel/ai",
+    "npm": "ai",
+    "pypi": null,
     "ecosystem": [
       "typescript",
       "nextjs"
     ],
-    "stars_delta": 24030,
-    "npm_downloads_delta": null,
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
     "detected_at": "2026-05-05",
+    "status": "pending",
+    "repo_url": "https://github.com/vercel/ai",
+    "stars_delta": 24033,
+    "npm_downloads_delta": null,
     "pending_pr": true,
     "pr_url": null,
     "pr_created_at": null
   },
   {
     "name": "LiteLLM",
-    "repo_url": "https://github.com/BerriAI/litellm",
+    "github": "BerriAI/litellm",
+    "npm": null,
+    "pypi": null,
     "ecosystem": [
       "python",
       "llm-tooling"
     ],
-    "stars_delta": 45736,
-    "npm_downloads_delta": null,
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
     "detected_at": "2026-05-05",
+    "status": "pending",
+    "repo_url": "https://github.com/BerriAI/litellm",
+    "stars_delta": 45757,
+    "npm_downloads_delta": null,
     "pending_pr": true,
     "pr_url": null,
     "pr_created_at": null
   },
   {
     "name": "OpenTelemetry Auto-Instrumentation",
-    "repo_url": "https://github.com/open-telemetry/opentelemetry-python-contrib",
+    "github": "open-telemetry/opentelemetry-python-contrib",
+    "npm": null,
+    "pypi": null,
     "ecosystem": [
       "python",
       "infrastructure"
     ],
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
+    "detected_at": "2026-05-05",
+    "status": "pending",
+    "repo_url": "https://github.com/open-telemetry/opentelemetry-python-contrib",
     "stars_delta": 1037,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05",
     "pending_pr": true,
     "pr_url": null,
     "pr_created_at": null
   },
   {
     "name": "tRPC",
-    "repo_url": "https://github.com/trpc/trpc",
+    "github": "trpc/trpc",
+    "npm": "@trpc/server",
+    "pypi": null,
     "ecosystem": [
       "typescript",
       "nextjs"
     ],
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
+    "detected_at": "2026-05-05",
+    "status": "pending",
+    "repo_url": "https://github.com/trpc/trpc",
     "stars_delta": 40146,
     "npm_downloads_delta": null,
-    "detected_at": "2026-05-05",
     "pending_pr": true,
     "pr_url": null,
     "pr_created_at": null
   },
   {
     "name": "Drizzle ORM",
-    "repo_url": "https://github.com/drizzle-team/drizzle-orm",
+    "github": "drizzle-team/drizzle-orm",
+    "npm": "drizzle-orm",
+    "pypi": null,
     "ecosystem": [
       "typescript",
       "nextjs"
     ],
-    "stars_delta": 34208,
-    "npm_downloads_delta": null,
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
     "detected_at": "2026-05-05",
+    "status": "pending",
+    "repo_url": "https://github.com/drizzle-team/drizzle-orm",
+    "stars_delta": 34212,
+    "npm_downloads_delta": null,
     "pending_pr": true,
     "pr_url": null,
     "pr_created_at": null
   },
   {
     "name": "Hono",
-    "repo_url": "https://github.com/honojs/hono",
+    "github": "honojs/hono",
+    "npm": "hono",
+    "pypi": null,
     "ecosystem": [
       "typescript"
     ],
-    "stars_delta": 30296,
-    "npm_downloads_delta": null,
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
     "detected_at": "2026-05-05",
+    "status": "pending",
+    "repo_url": "https://github.com/honojs/hono",
+    "stars_delta": 30300,
+    "npm_downloads_delta": null,
+    "pending_pr": true,
+    "pr_url": null,
+    "pr_created_at": null
+  },
+  {
+    "name": "zustand",
+    "github": "pmndrs/zustand",
+    "npm": "zustand",
+    "pypi": null,
+    "ecosystem": [
+      "typescript",
+      "nextjs"
+    ],
+    "confidence": "medium",
+    "score": 6,
+    "score_breakdown": {
+      "source_quality": 2,
+      "ecosystem_fit": 3,
+      "recency": 1,
+      "displacement_signal": 0
+    },
+    "discovered_via": [
+      "watchlist_monitor"
+    ],
+    "detected_at": "2026-05-05",
+    "status": "pending",
+    "repo_url": "https://github.com/pmndrs/zustand",
+    "stars_delta": 57938,
+    "npm_downloads_delta": null,
     "pending_pr": true,
     "pr_url": null,
     "pr_created_at": null
