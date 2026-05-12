@@ -82,6 +82,7 @@ jobs:
         if: steps.find_pending.outputs.pending_count > 0 && !inputs.dry_run
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
         run: |
           python3 << 'EOF'
           import json
